@@ -1,4 +1,6 @@
 
+layout: default
+title: aardio快速开发
 paginate: 1 # 每页文章数
 paginate_path: "page:num" # 可选，分页链接
 
