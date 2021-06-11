@@ -12,14 +12,14 @@ description: aardio-文章列表
 <!-- 分页链接 -->
 <div class="pagination">
 {% if paginator.previous_page %}
-<a href="/page{{ paginator.previous_page }}" class="previous">Previous</a>
+<a href="/page{{ paginator.previous_page }}" class="previous">往前</a>
 {% else %}
-<span class="previous">Previous</span>
+<span class="previous">往前</span>
 {% endif %}
-<span class="page_number ">Page: {{ paginator.page }} of {{ paginator.total_pages }}</span>
+<span class="page_number ">页: {{ paginator.page }} of {{ paginator.total_pages }}</span>
 {% if paginator.next_page %}
-<a href="/page{{ paginator.next_page }}" class="next">Next</a>
+<a href="/page{{ paginator.next_page }}" class="next">往后</a>
 {% else %}
-<span class="next ">Next</span>
+<span class="next ">往后</span>
 {% endif %}
 </div>
