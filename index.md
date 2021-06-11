@@ -6,7 +6,7 @@ description: aardio-文章列表
 
 <!-- 遍历分页后的文章 -->
 {% for post in paginator.posts %}
-<h3><a href="/aardio{{ post.url }}">{{ post.description }}<span style="font-size:12px">[{{ post.url }}[</span></a></h3>
+<h3><a href="/aardio{{ post.url }}">{{ post.description }}<span style="font-size:12px">&nbsp&nbsp&nbsp[{{ post.url }}[</span></a></h3>
 {% endfor %}
 
 <!-- 分页链接 -->
