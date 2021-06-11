@@ -3,6 +3,9 @@ layout: default
 title: HODOR-BLOG
 description: aardio-文章列表
 ---
+{% for post in paginator.posts %}
+    <a href="{{ post.url }}">{{ post.title }}</a>
+{% endfor %}
 
 <ul>
   {% for post in site.posts %}
@@ -11,12 +14,18 @@ description: aardio-文章列表
     </li>
   {% endfor %}
 </ul>
-<nav class="pagination" role="navigation">
-    {% if paginator.previous_page %}
-    <a class="previous pagination__newer btn btn-small btn-tertiary" href="{{ paginator.previous_page_path }}">&larr; 上一页</a>
+{% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}"上一页</a>
+{% endif %}
+{% for page in (1..paginator.total_pages) %}
+    {% if page == paginator.page %}
+      <span class="active">{{ page }}</span>
+    {% elsif page == 1 %}
+      <a href="{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}">{{ page }}</a>
+    {% else %}
+      <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
     {% endif %}
-    <span class="page_num pagination__page-number">{{ paginator.page }} / {{ paginator.total_pages }}</span>
-    {% if paginator.next_page %}
-    <a class="next pagination__older btn btn-small btn-tertiary" href="{{ paginator.next_page_path }}">下一页 &rarr;</a>
-    {% endif %}
-</nav>
+{% endfor %}
+{% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">下一页</a>
+{% endif %}
