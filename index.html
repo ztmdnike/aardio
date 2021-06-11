@@ -6,20 +6,16 @@ description: aardio-文章列表
 
 <!-- 遍历分页后的文章 -->
 {% for post in paginator.posts %}
-<h1><a href="/aardio{{ post.url }}">*{{ post.description }}--{{ post.url }}</a></h1>
+<h1><a href="/aardio{{ post.url }}">{{ post.description }}--{{ post.url }}</a></h1>
 {% endfor %}
 
 <!-- 分页链接 -->
 <div class="pagination">
+ <span class="page_number ">总页数: {{ paginator.page }} / {{ paginator.total_pages }}</span>
 {% if paginator.previous_page %}
-<a href="/page{{ paginator.previous_page }}" class="previous">前一页</a>
-{% else %}
-<span class="previous">前一页</span>
+<a href="/aardio/page{{ paginator.previous_page }}" class="previous">上一页</a>
 {% endif %}
-<span class="page_number ">总页数: {{ paginator.page }} / {{ paginator.total_pages }}</span>
 {% if paginator.next_page %}
 <a href="/aardio/page{{ paginator.next_page }}" class="next">下一页</a>
-{% else %}
-<span class="next ">下一页</span>
 {% endif %}
 </div>
