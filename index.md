@@ -6,7 +6,9 @@ description: aardio-文章列表
 {% for post in paginator.posts %}
     <a href="{{ post.url }}">{{ post.title }}</a>
 {% endfor %}
-
+{% if paginator.total_pages > 1 %}
+分页
+{% endif %}
 <ul>
   {% for post in site.posts %}
     <li>
