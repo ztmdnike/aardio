@@ -13,7 +13,7 @@ description: aardio-文章列表
 <div class="pagination">
  <span class="page_number ">总页数: {{ paginator.page }} / {{ paginator.total_pages }}</span>
 {% if paginator.previous_page %}
-<a href="/aardio/page{{ paginator.previous_page }}" class="previous">上一页 -paginator.previous_page</a>
+<a href="/aardio/page{{ paginator.previous_page }}" class="previous">上一页 -{{ paginator.previous_page }}</a>
 {% endif %}
 {% if paginator.next_page %}
 <a href="/aardio/page{{ paginator.next_page }}" class="next">下一页</a>
