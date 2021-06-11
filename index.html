@@ -11,14 +11,14 @@ description: aardio-文章列表
 
 <!-- 分页链接 -->
 <div class="pagination">
- <span class="page_number ">总页数: {{ paginator.page }} / {{ paginator.total_pages }}</span>
+<span class="page_number ">总文章数: {{ paginator.total_posts }}</span>
+<span class="page_number ">第{{ paginator.page }}页/共{{ paginator.total_pages }}页</span>
 {% if paginator.previous_page == 1 %}
-<a href="/aardio" class="previous">上一页</a>
+<a href="/" class="previous">上一页</a>
 {% else if paginator.previous_page %}
 <a href="/aardio/page{{ paginator.previous_page }}" class="previous">上一页</a>
 {% endif %}
 {% if paginator.next_page %}
 <a href="/aardio/page{{ paginator.next_page }}" class="next">下一页</a>
 {% endif %}
-<span class="page_number ">总文章数: {{ paginator.total_posts }}</span>
 </div>
