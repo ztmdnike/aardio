@@ -19,10 +19,10 @@
 
   <div class="wrapper">
     <header>
-      <h1 class="title">{{ page.title | default: site.github.repository_name }}</h1>
+      <h1 class="title">{{ page.description | default: site.github.repository_name }}</h1>
     </header>
     <div id="container">
-      <p class="tagline">{{ page.description | default: site.github.project_tagline }}</p>
+      <p class="tagline">{{ page.title | default: site.github.project_tagline }}</p>
       <div id="main" role="main">
         <div class="download-bar">
         <div class="inner">
@@ -33,7 +33,10 @@
         <span class="blc"></span><span class="trc"></span>
         </div>
         <article class="markdown-body">
-          hehe
+          ---
+          layout: default
+          description: aardio-文章列表
+          ---
           {{ content }}
         </article>
       </div>
