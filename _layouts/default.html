@@ -57,28 +57,28 @@
       ga('send', 'pageview');
     </script>
   {% endif %}
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/clipboard@1/dist/clipboard.min.js"></script>
+   <script src="./clp.js"></script>
 {% if page.content contains "code" %}
 <script>
 // get all <code> elements
 var allCodeBlocksElements = $( "code" );
-
 allCodeBlocksElements.each(function(i) {
   // add different id for each code block
-
   // target 
   var currentId = "codeblock" + (i + 1);
   $(this).attr('id', currentId);
-     
   //trigger
   var clipButton = '<button class="btn" data-clipboard-target="#' + currentId + '"><img src="https://clipboardjs.com/assets/images/clippy.svg" width="13" alt="Copy to clipboard"></button>';
+  $(this).on('success', function(e) {
+        alert('复制成功')
+    });
+    $(this).on('error', function(e) {
+        console.log(e);
+    });
      $(this).after(clipButton);
   });
- 
   new Clipboard('.btn');
 </script>
 {% endif %}
-
 </body>
 </html>
