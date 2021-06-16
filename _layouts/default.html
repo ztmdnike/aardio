@@ -68,12 +68,6 @@ allCodeBlocksElements.each(function(i) {
   $(this).attr('id', currentId);
   //trigger
   var clipButton = '<button class="btn" data-clipboard-target="#' + currentId + '"><img src="https://clipboardjs.com/assets/images/clippy.svg" width="13" alt="Copy to clipboard"></button>';
-  $(this).on('success', function(e) {
-        alert('复制成功')
-    });
-    $(this).on('error', function(e) {
-        console.log(e);
-    });
      $(this).after(clipButton);
   });
   new Clipboard('.btn');
