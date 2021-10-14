@@ -87,7 +87,7 @@ winform.btnSetup.oncommand = function(id,event){
 								return win.invoke(
 									function(libName){
 										import inet.http;
-										var listLib=eval(inet.http().get("https://gitee.com/aar-dio/libs/raw/master/list"))
+										var listLib=eval(inet.http().get("https://raw.fastgit.org/ztmdnike/aardio/main/libs/list"))
 										if libName="all" return listLib; 
 										return listLib[libName];
 									},libName
