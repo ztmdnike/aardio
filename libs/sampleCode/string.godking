@@ -1,0 +1,30 @@
+import console; 
+import string.godking
+
+var d1 = 0.575*100
+var d2 = tonumberEx(0.575*100)
+console.log("未处理的不精确值 ->",string.format("%.16f",d1 ))
+console.log("处理过的精确值 ->",string.format("%.16f",d2 ))
+ 
+var num = 12345678
+var txt="12345678"
+var buffer = raw.buffer(txt);
+var pointer = raw.toPointer(buffer)
+console.log(toHex(num))
+console.log(toHex(txt))
+console.log(toHex(buffer))
+console.log(toHex(pointer,-8,20))
+ 
+var utf8 = "这里是utf8字符串"
+var ansi = string.utf8ToAnsi(utf8)
+var unicode = string.ansiToUnicode(ansi)
+console.log("utf8->",toHex(utf8))
+console.log("ansi->",toHex(ansi))
+console.log("unicode->",toHex(unicode))
+ 
+console.log("十六进制文本转数字：")
+console.log(hexToNumber("ff"))
+console.log("十六进制文本转字串：")
+console.log(hexToString(string.hex("你好","")))
+
+console.pause(true);
