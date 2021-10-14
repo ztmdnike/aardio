@@ -31,11 +31,7 @@ e.onItemSelect = function(folderIndex/*菜单索引*/, itemIndex/*项目索引*/
 		..win.msgbox("点击了："++e.getItemText(folderIndex,itemIndex))
 	};
  
-import win.ui.ctrl.egrid
-var g = win.ui.ctrl.egrid(winform.custom2)
-g.BorderStyle=0
-g.LineColor=e.FolderBgColor
- 
+
  
 winform.show();
 win.loopMessage();
