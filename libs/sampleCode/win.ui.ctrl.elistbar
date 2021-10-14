@@ -1,0 +1,41 @@
+import win.ui;
+/*DSG{{*/
+var winform = win.form(text="aardio form";right=759;bottom=469)
+winform.add(
+custom={cls="custom";text="自定义控件";left=8;top=8;right=182;bottom=464;border=1;db=1;dl=1;dt=1;z=1};
+custom2={cls="custom";text="自定义控件";left=189;top=8;right=752;bottom=465;z=2}
+)
+/*}}*/
+ 
+import win.ui.ctrl.elistbar
+var e = win.ui.ctrl.elistbar(winform.custom)
+ 
+e.addFolder("> 菜单一")
+e.addFolder("> 菜单二")
+e.addFolder("> 菜单三")
+e.addFolder("> 菜单四")
+for(i=0;3;1){
+	e.addItem(i,"· 项目1  ",0)
+	e.addItem(i,"· 项目2  ",2)
+	e.addItem(i,"· 项目3  ",3)
+}
+//e.setItemBigImageList(..string.load("~/32×32_126个.eil"))
+//e.RangeStyle=0
+ 
+e.onItemRclick = function(folderIndex/*菜单索引*/, itemIndex/*项目索引*/){
+		/*项目被右击*/
+		..win.msgbox("项目被右击")
+	};
+e.onItemSelect = function(folderIndex/*菜单索引*/, itemIndex/*项目索引*/){
+		/*项目被选择*/
+		..win.msgbox("点击了："++e.getItemText(folderIndex,itemIndex))
+	};
+ 
+import win.ui.ctrl.egrid
+var g = win.ui.ctrl.egrid(winform.custom2)
+g.BorderStyle=0
+g.LineColor=e.FolderBgColor
+ 
+ 
+winform.show();
+win.loopMessage();
