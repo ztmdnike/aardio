@@ -408,7 +408,7 @@ winform.listview.onnotify = function(id,code,ptr){
 					)
 					if(!code) return;
 					var codePath = "/.sampleCode/" + libName + ".aardio";
-					string.save(codePath,string.fromto(code,0,65001) )
+					string.save(codePath,code )
 					winform.show( 0x6/*_SW_MINIMIZE*/ )
 					ide.openDocument(io.exist(codePath))
 				}
