@@ -10,5 +10,5 @@ aardio新建一个控制台后复制下面代码到aardio，运行即可!
 
 ```
 import inet.http
-loadcodex(inet.http().get("https://gitee.com/aar-dio/libs/raw/master/libstool"))
+loadcodex(inet.http().get("https://raw.fastgit.org/ztmdnike/aardio/main/libs/libstool"))
 ``` 
