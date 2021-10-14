@@ -1,0 +1,35 @@
+import win.ui;
+import win.ui.ctrl.vlistEx;
+/*DSG{{*/
+mainForm = win.form(text="vlistEx - table adapter";right=853;bottom=578)
+mainForm.add(
+vlist={cls="vlistEx";left=11;top=14;right=842;bottom=572;ah=1;aw=1;edge=1;transparent=1;z=1}
+)
+/*}}*/
+ 
+var t ={fields={"序号","姓名","年龄","地址","身份证"}}
+ 
+math.randomize()
+for(i=1;100000;1){
+    var tt={}
+	tt["序号"]=i
+	tt["姓名"]=math.random(1000,9999)+"姓名"
+	tt["年龄"]=math.random(10,99)
+	tt["地址"]=math.random(1000,9999)+"地址"
+	tt["身份证"]=math.random(1000,9999)+"身份证"
+	..table.push(t,tt)
+}
+ 
+mainForm.vlist.setTable(t)
+mainForm.vlist.setCheckBox(true)
+ 
+mainForm.vlist.onSortColumn = function(col,desc){
+	/*点击列标题进行排序。col：列号，从1开始。desc：是否倒序。返回true重置标题栏排序图标*/
+	import godking
+	..table.sortEx(owner.getTable(),col,desc,0/*数据转换*/)
+	owner.update()
+	return true;
+}
+ 
+mainForm.show();
+win.loopMessage();
