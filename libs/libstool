@@ -1,0 +1,497 @@
+//扩展库(收集版)
+import win.ui;
+/*DSG{{*/
+var winform = win.form(text="aardio扩展库（收集版）";right=789;bottom=504)
+winform.add(
+btnDeselectAll={cls="button";text="取消全选";left=551;top=469;right=630;bottom=498;db=1;dr=1;z=3};
+btnSearch={cls="button";text="搜索扩展库";left=606;top=6;right=724;bottom=36;dr=1;dt=1;z=7};
+btnSelectAll={cls="button";text="全选";left=453;top=469;right=532;bottom=498;db=1;dr=1;z=2};
+btnSetup={cls="button";text="安装/更新";left=649;top=469;right=763;bottom=498;db=1;dr=1;z=4};
+editKeyword={cls="edit";left=379;top=6;right=596;bottom=36;dr=1;dt=1;edge=1;z=6};
+lbInfo={cls="static";text="鼠标双击上面的扩展库项目打开相关范例";left=140;top=473;right=435;bottom=501;db=1;dl=1;dr=1;transparent=1;z=5};
+lbKeyword={cls="static";text="库名称或库功能有关的关键词：";left=158;top=13;right=371;bottom=35;align="right";dr=1;dt=1;transparent=1;z=8};
+listview={cls="listview";left=11;top=41;right=778;bottom=463;bgcolor=16777215;db=1;dl=1;dr=1;dt=1;edge=1;fullRow=1;z=1}
+)
+/*}}*/
+
+import inet.http;
+import win.ui.atom;
+import ide
+var atom,hwnd = winform.atom("aardio.extlib.F4700CFB-B4ED-4637-8F19-C76B3B8DC7F9");
+if(!atom){ 
+	win.quitMessage();	return;
+}
+
+winform.enableDpiScaling();
+
+winform.listview.setExtended(0x4/*_LVS_EX_CHECKBOXES*/) 
+winform.listview.insertColumn("扩展库",135) 
+winform.listview.insertColumn("版本",100) 
+winform.listview.insertColumn("本地版本",70) 
+winform.listview.insertColumn("作者",100)  
+winform.listview.insertColumn("说明",-1) 
+
+winform.show() 
+winform.text = "aardio扩展库安装程序 正在获取服务器列表...."
+showLibs = function(libs){
+    winform.listview.clear();
+    winform.listview.redraw();
+    
+	if( libs ){ 
+		var installedLibs = ide.getExtLibs(); 
+		for libName,libInfo in table.eachName(libs){ 
+			var lib = libs[libName]
+			var row = winform.listview.addItem( { libName;libInfo.version;installedLibs[libName][["version"]] : "未安装";libInfo.author;libInfo.description } )
+			if( installedLibs[libName][["version"]]  )
+				winform.listview.setChecked(row,true)
+		} 
+	}
+	else {
+		winform.text = "aardio扩展库安装程序 - "  +  ( err:"为避免滥用免费资源，请稍后再试")
+	} 	
+}
+var libs = eval(inet.http().get("https://gitee.com/aar-dio/libs/raw/master/list"));
+showLibs(libs);
+
+winform.text = "aardio扩展库（收集版） - 已获取服务器最新列表";
+winform.btnSetup.oncommand = function(id,event){
+	winform.btnSetup.disabled = true;
+	
+	var installedLibs = ide.getExtLibs(); 
+	for(i=winform.listview.count;1;-1){
+		if( winform.listview.getChecked(i) ){
+			var libName = winform.listview.getItemText(i,1) ;
+			var libVersion = winform.listview.getItemText(i,2) ;
+			var installVersion = installedLibs[libName][["version"]];
+			 
+			if( installVersion != libVersion ){
+				winform.text = "aardio扩展库安装程序 正在安装扩展库:" + libName;
+				win.invoke(
+					function(libName,libs){
+						/*idex{{*/
+						namespace idex{
+    						import inet.http;
+							import fsys;
+							import sevenZip.lzma;
+							import fsys.untar;
+							import inet.downBox;
+							import process.mutex;
+							import win;
+							getExtLibs = function(){
+								var strLibVers = ..string.load( "~\extensions\extlibver.table") or "{}";
+								return eval(strLibVers) or {};
+							};
+							
+							requestLibInfo = function(libName){
+								if( !libName ) error("请指定库名称参数",2);
+								return win.invoke(
+									function(libName){
+										import inet.http;
+										var listLib=eval(inet.http().get("https://gitee.com/aar-dio/libs/raw/master/list"))
+										if libName="all" return listLib; 
+										return listLib[libName];
+									},libName
+								) 
+							};
+							
+							installLib = function(libName,libUrl,askTitle){
+								return importFile(libName,libUrl,askTitle:"",true);
+							};
+							
+							var hasBeenEntered = {}; 
+							importFile = function(libName,libUrl,askTitle,installOnly){ 
+								if(hasBeenEntered[libName]){
+									error('导入库失败,未找到库文件\n库路径:' + libName,3 );
+								}
+								hasBeenEntered[libName] = true; 
+								
+								var downloadUrl,downloadLibName,downloadVersion;
+								if(libUrl){
+									downloadLibName = libName;
+									downloadUrl = libUrl;
+								}
+								elseif(_IMPORTURL[libName]){
+									downloadLibName = libName;
+									downloadUrl = _IMPORTURL[libName];
+								}
+								else{
+									var updateInfo = requestLibInfo( libName ); 
+									if( ! ( updateInfo ? updateInfo.url ) ){
+										if(!installOnly){
+											error('导入库失败,未找到库文件\n库路径:' + libName,3 );
+										}
+										hasBeenEntered[libName] = false;
+										return false;
+									}
+									
+									if( installOnly ){
+										var libVers = getExtLibs();
+										if( libVers[libName][["version"]] == updateInfo.version ){
+											hasBeenEntered[libName] = false;
+											return true;	
+										} 
+									}
+									
+									downloadUrl = updateInfo.url;
+									downloadLibName = updateInfo.libName;
+									downloadVersion =  updateInfo.version;
+								}
+								
+								if( !askTitle )
+									askTitle =  libName+" 扩展库尚未安装,您需要下载安装 "+libName+" 扩展库吗?";
+								
+								if(  ( !#askTitle ) || win.msgboxTest( askTitle ,"aardio") ){ 
+								
+									var mutex = process.mutex("{5C6E466D-0DF1-4ABC-BFAD-9B890AA358FC}.lock.import." + libName,false,false);
+									mutex.wait(); {
+									
+										if( ..string.endWith( downloadUrl,".tar.lzma",true) ){
+											var ok =download(downloadUrl,"aardio- 下载 "+libName+" 扩展库","~/download/lib/" , ,downloadLibName + ".tar.lzma");
+											if(ok){
+												if(downloadVersion && ..io.libpath(libName)) {
+													var libVers = getExtLibs();
+													libVers[downloadLibName] = { version = downloadVersion };
+													..string.save("~\extensions\extlibver.table", ..table.tostring(libVers) )
+												}	
+											}
+										} 
+										elseif( ..string.endWith( downloadUrl,".aardio",true) ){
+											var bin = inet.http().get(downloadUrl);
+											if(bin){
+												var libPath,libDir = ..io.libpath(libName)
+												if(!libPath) libPath = ..io.joinpath(libDir,"_.aardio");
+												..string.save(libPath,bin) 
+											}
+											
+											var msg = "安装失败";
+											if(..io.libpath(libName)){
+												msg = " 已安装成功";
+												//refreshStdLib();
+											}
+											
+											if(installOnly){ 
+												win.msgboxTimeout("库 " + libName ++ msg,"aardio"); 
+											}
+										} 
+									} mutex.release();
+									
+									if(..io.libpath(libName) ){	
+										
+										if(!installOnly){
+											global.import(libName);
+										}
+				 						
+										hasBeenEntered[libName] = false;
+										return true;
+									}
+								}
+								
+								hasBeenEntered[libName] = false;
+								if(!installOnly){
+									error('导入库失败,未找到库文件\n库路径: ' + libName,3 ); 
+								}
+								return false; 
+							}
+							download = function(url,title="下载",saveDir,extraDir,saveName,parentForm){
+							var tUrl = ..inet.url.split(url);
+							if(!tUrl){
+								error("错误的URL参数",2)
+							}
+							var tPath = ..io.splitpath(tUrl.path)
+							
+							saveDir = ..io.fullpath(saveDir : "~\download\" )
+							..fsys.createDir(saveDir);
+							
+							if(!saveName){
+								saveName = tPath.file;
+							}
+							if(!extraDir){
+								extraDir = ..string.match(saveName,"(.+)\.[^\.]+$"  );
+								if(!extraDir) extraDir = saveName + ".uncompress";
+								extraDir = ..fsys.joinpath(saveDir,extraDir)
+							}
+							else {
+								extraDir = ..io.fullpath(extraDir);
+							} 
+						
+							var pathCabinet = ..fsys.joinpath(saveDir,saveName)
+							var downBox = ..inet.downBox(parentForm,title,false) 
+							downBox.headers = self.headers;
+							downBox.referer = self.referer;
+							downBox.userAgent = self.userAgent;
+							downBox.preget = self.preget;
+							
+							downBox.endProc = function(){
+								downBox.text = "正在解压缩:" + saveName; 
+								..win.peekPumpInputMessage();
+								
+								var tarTempName = pathCabinet + ".tar";   
+								downBox.progress.hide = false;
+		 						
+								var processed = 0;
+								import fsys.file
+								var step = (downBox.contentLength:fsys.file(pathCabinet).size()) / 1000;
+								downBox.progress.setProgressRange(1,1000);  
+								
+								var peekMsg = ..win.peekPumpMessage;
+								var ret = ..sevenZip.lzma.decodeFile(pathCabinet,tarTempName,function(inProcessed,outProcessed){ 
+									if( (peekMsg()!==null) && downBox.continueModal ){
+			 							processed = processed + inProcessed; 
+			 							downBox.progress.progressPos = processed / step;
+									}
+									else {
+										return true;
+									}
+									
+								} ); 
+								
+								if(!ret){
+									owner.complete = false;
+									owner.endModal(); 
+									return;
+								} 
+								
+								downBox.onClose = function(){ 
+									return false;
+								}
+								downBox.text = "正在展开:" + saveName; 
+								var tarFile = ..fsys.untar(tarTempName,extraDir);
+								tarFile.onProgressFile = function(path){
+									downBox.labInfo.text = path;
+								};
+		  						
+								downBox.progress.setProgressRange(1,1000 ); 
+								for(fileName,writeSize,remainSize,pos in tarFile.eachBlock(1000) ){ 
+									if( peekMsg()!==null ){
+										downBox.progress.progressPos = pos;
+									}
+									else {
+										break ;
+									} 
+								}
+								
+								tarFile.close()
+								..io.remove( tarTempName );
+								downBox.onClose = null;
+								if(tarFile.complete){
+									owner.endModal(); 
+								}
+								else {
+									downBox.text = tarFile.lastError
+								} 
+							}
+							downBox.download(url,pathCabinet,null,null,"" ) 
+							
+							if(!downBox.complete){ 
+								return;
+							} 
+							
+							if( ! ..io.exist(pathCabinet,4) ){  
+								return false; 
+							} 
+ 						
+ 							var fileRootDir;
+ 							..fsys.enum( extraDir, "*.*",
+ 								function(dir,filename,fullpath,findData){ 
+ 									if(filename){ 
+ 										fileRootDir = dir;
+ 	           							return false;
+ 									} 
+ 								}  
+ 							);
+ 							if(!fileRootDir)return;
+ 							
+ 							var setupFile = ..fsys.joinpath(fileRootDir,"setup.dl.aardio")
+							if( ..io.exist(setupFile) ){
+								var handle = ..thread.create( setupFile ); 
+								if( ..win.isClosed() ){
+									..thread.wait(handle) 
+								}
+								else {
+									..thread.waitOne(handle) 
+								} 
+								..raw.closehandle(handle) 
+							}
+							return true; 		
+						}
+							
+						}
+						/*}}*/
+						idex.installLib( libName )
+						
+					} ,libName,libs
+				)
+				
+				if(  ..win.isClosed() ) return;
+				 
+				installedLibs = ide.getExtLibs(); 
+				winform.listview.setItemText(installedLibs[libName][["version"]]:"安装失败",i,3);
+				if( installedLibs[libName][["version"]] == libVersion ){
+					winform.text = "aardio扩展库安装程序 已安装扩展库:"  + libName;
+				}
+				else {
+					winform.text = "aardio扩展库安装程序 扩展库:"  + libName + " 安装失败!";
+				}
+				
+			}
+			else {
+				winform.text = "aardio扩展库安装程序 忽略已安装扩展库:" + libName;
+			}
+			
+		}
+	} 
+	
+	winform.text = "aardio扩展库安装程序 安装已完成" ;
+	ide.refreshStdLib();
+	winform.btnSetup.disabled = false;
+}
+
+//取消全选
+winform.btnDeselectAll.oncommand = function(id,event){
+	for(i=winform.listview.count;1;-1){
+		winform.listview.setChecked(i,false) 
+	} 	
+}
+
+//全选
+winform.btnSelectAll.oncommand = function(id,event){ 
+	for(i=winform.listview.count;1;-1){
+		winform.listview.setChecked(i,true) 
+	}  
+}
+ 
+import inet.downBox;
+import process;
+import zlib.unzip;
+import fsys;
+fsys.createDir( "/.sampleCode/");
+var requestLibSample = function(libName){
+	if( !libName ) error("请指定库名称参数",2);
+	return ..win.invoke(
+		function(libName){
+			import inet.http;
+			var http=inet.http();
+			var htpaddr="https://gitee.com/aar-dio/libs/raw/master/sampleCode/"+ libName;
+			assert( http.beginRequest(htpaddr) )
+			var ok,code= http.send();
+			if(ok?code==200){
+				return {codeUrl=htpaddr}; 
+			}else {
+				htpaddr=htpaddr + ".zip";
+				assert( http.beginRequest(htpaddr) ) ;
+				ok,code= http.send();
+			};
+			if(ok?code==200){
+				return {zipUrl=htpaddr};
+			}
+			return null;
+		},libName
+	) 
+};
+winform.listview.onnotify = function(id,code,ptr){
+
+    select(code) { 
+    	case 0xFFFFFFFD/*_NM_DBLCLK*/ {
+    		var nm = winform.listview.getNotifyMessage(code,ptr)
+    		if(winform.listview.selIndex){
+        		var libName = winform.listview.getItemText(nm.iItem,1)
+        		if(!libName) return;
+				var libInfo = libs[libName]
+				if( libInfo.codeUrl ){
+					var code,err = win.invoke(
+						function(url){
+							import inet.http;
+							var http = inet.http();
+							http.disableCache();
+							return http.get(url);
+						},libInfo.codeUrl
+					)
+					if(!code) return;
+					var codePath = "/.sampleCode/" + libName + ".aardio";
+					string.save(codePath,string.fromto(code,0,65001) )
+					winform.show( 0x6/*_SW_MINIMIZE*/ )
+					ide.openDocument(io.exist(codePath))
+				}
+				elseif( libInfo.zipUrl ){
+					var codePath = "/.sampleCode/" + libName + ".zip";
+					var downBox = inet.downBox(winform,"/.sampleCode/" + libName,true )
+	
+					if( downBox.download(libInfo.zipUrl , codePath ) ){
+	 					var ok,err = zlib.unzip.extract( codePath, "/.sampleCode/" + libName ) 
+	 					..process.explore("/.sampleCode/" + libName)
+	 				} 
+				}
+				else{
+					winform.lbInfo.text = "抱歉,暂时没有找到与 " + libName + "扩展库有关的范例"
+					..process.execute("http://api.aardio.com/v10/pages/search?q=" + libName);
+					return;
+				};
+        	}
+    	}
+    }
+}
+
+import win.debounce;
+var search = win.debounce( 
+function(id,event){
+    	var k = winform.editKeyword.text;
+    	if(#k) k = string.trim(k);
+    	
+    	if(!#k){
+    		showLibs(libs);
+    		return;
+    	}
+    	keywords = string.splitEx(string.lower(k),"\s+");
+    	var result = {}
+    	for(name,libInfo in libs){ 
+    		for(i,k in keywords){
+    			if(libInfo.keywords){
+    				if(string.indexOf(string.lower(libInfo.keywords),k)) {
+    					result[name] = libInfo;
+    					continue;
+    				}
+    			}
+    			
+    			if(libInfo.description){
+    				if(string.indexOf(string.lower(libInfo.description),k)) {
+    					result[name] = libInfo;
+    					continue;
+    				}
+    			}
+    			
+    			if(libInfo.author){
+    				if(string.indexOf(libInfo.author,k)) {
+    					result[name] = libInfo;
+    					continue;
+    				}
+    			}
+    			
+    			if(string.indexOf(name,k)) {
+    				result[name] = libInfo;
+    				continue;
+    			}
+    		} 
+    	};
+    	
+		showLibs( result );
+	}
+)
+
+winform.btnSearch.oncommand = function(id,event){
+    winform.listview.clear();
+    search();    
+}
+
+winform.onOk = function(){
+    winform.listview.clear();
+    search();
+}
+
+winform.editKeyword.oncommand = function(id,event){
+	if( event = 0x300/*_EN_CHANGE*/ ){
+		search();
+	}
+}
+
+winform.editKeyword.setFocus();
+win.loopMessage();
