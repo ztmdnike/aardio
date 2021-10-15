@@ -396,8 +396,6 @@ winform.listview.onnotify = function(id,code,ptr){
         		var libName = winform.listview.getItemText(nm.iItem,1)
         		if(!libName) return;
 				var libInfo = libs[libName]
-				import console
-				console.dump(libInfo)
 				if( libInfo.codeUrl ){
 					var code,err = win.invoke(
 						function(url){
