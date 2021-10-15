@@ -30,27 +30,27 @@ winform.listview.insertColumn("版本",100)
 winform.listview.insertColumn("本地版本",70) 
 winform.listview.insertColumn("作者",100)  
 winform.listview.insertColumn("说明",-1) 
+winform.listview.insertColumn("范例",50)
 
 winform.show() 
 winform.text = "aardio扩展库安装程序 正在获取服务器列表...."
 showLibs = function(libs){
     winform.listview.clear();
     winform.listview.redraw();
-    
 	if( libs ){ 
 		var installedLibs = ide.getExtLibs(); 
 		for libName,libInfo in table.eachName(libs){ 
-			var lib = libs[libName]
-			var row = winform.listview.addItem( { libName;libInfo.version;installedLibs[libName][["version"]] : "未安装";libInfo.author;libInfo.description } )
+			var row = winform.listview.addItem( { libName;libInfo.version;installedLibs[libName][["version"]] : "未安装";libInfo.author;libInfo.description;(libInfo.codeUrl:libInfo.zipUrl)?"有" } )
 			if( installedLibs[libName][["version"]]  )
 				winform.listview.setChecked(row,true)
 		} 
 	}
 	else {
-		winform.text = "aardio扩展库安装程序 - "  +  ( err:"为避免滥用免费资源，请稍后再试")
+		winform.text = "aardio扩展库（收集版）安装程序 - "  +  ( err:"为避免滥用免费资源，请稍后再试")
+		return ; 
 	} 	
 }
-var libs = eval(inet.http().get("https://gitee.com/aar-dio/libs/raw/master/list"));
+var libs = eval(inet.http().get("https://gitee.com/aar-dio/libs/raw/master/list"):"");
 showLibs(libs);
 
 winform.text = "aardio扩展库（收集版） - 已获取服务器最新列表";
@@ -87,7 +87,7 @@ winform.btnSetup.oncommand = function(id,event){
 								return win.invoke(
 									function(libName){
 										import inet.http;
-										var listLib=eval(inet.http().get("https://raw.fastgit.org/ztmdnike/aardio/main/libs/list"))
+										var listLib=eval(inet.http().get("https://raw.fastgit.org/ztmdnike/aardio/main/libs/list"):"")
 										if libName="all" return listLib; 
 										return listLib[libName];
 									},libName
@@ -166,7 +166,6 @@ winform.btnSetup.oncommand = function(id,event){
 											var msg = "安装失败";
 											if(..io.libpath(libName)){
 												msg = " 已安装成功";
-												//refreshStdLib();
 											}
 											
 											if(installOnly){ 
