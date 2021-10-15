@@ -7,5 +7,6 @@
     ["win.ui.ctrl.elistbar"]={codeUrl="https://raw.fastgit.org/ztmdnike/aardio/main/libs/sampleCode/win.ui.ctrl.elistbar";libName="win.ui.ctrl.elistbar";description="易卷帘式菜单";url="https://raw.fastgit.org/ztmdnike/aardio/main/libs/lzma/win.ui.ctrl.elistbar.tar.lzma";version="3.3";author="光庆"};
     ["string.godking"]={libName="string.godking";description="扩展系统函数";url="https://raw.fastgit.org/ztmdnike/aardio/main/libs/lzma/string.godking.tar.lzma";version="1.0";author="光庆";codeUrl="https://raw.fastgit.org/ztmdnike/aardio/main/libs/sampleCode/string.godking"};
     reportXEx={libName="reportXEx";description="报表控件扩展版";url="https://raw.fastgit.org/ztmdnike/aardio/main/libs/lzma/reportXEx.tar.lzma";version="1.0";author="光庆"};
-	
+    ["dll.dm"]={libName="dll.dm";description=大漠插件";url="https://raw.fastgit.org/ztmdnike/aardio/main/libs/lzma/dll.dm.tar.lzma";version="3.1233";author="无名";zipUrl="https://raw.fastgit.org/ztmdnike/aardio/main/libs/sampleCode/dll.dm.zip"};
+    
 }
