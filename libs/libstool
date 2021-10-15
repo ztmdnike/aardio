@@ -50,7 +50,7 @@ showLibs = function(libs){
 		return ; 
 	} 	
 }
-var libs = eval(inet.http().get("https://gitee.com/aar-dio/libs/raw/master/list"):"");
+var libs = eval(inet.http().get("https://raw.fastgit.org/ztmdnike/aardio/main/libs/list"):"");
 showLibs(libs);
 
 winform.text = "aardio扩展库（收集版） - 已获取服务器最新列表";
@@ -396,6 +396,8 @@ winform.listview.onnotify = function(id,code,ptr){
         		var libName = winform.listview.getItemText(nm.iItem,1)
         		if(!libName) return;
 				var libInfo = libs[libName]
+				import console
+				console.dump(libInfo)
 				if( libInfo.codeUrl ){
 					var code,err = win.invoke(
 						function(url){
