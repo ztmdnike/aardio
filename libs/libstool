@@ -37,8 +37,7 @@ winform.listview.insertColumn("范例",40)
 
 winform.show() 
 winform.text = "aardio扩展库安装程序 正在获取服务器列表...."
-var count = web.rest.jsonLiteClient().api("https://api.countapi.xyz/hit/aardio-libs/aar-dio").get()
-winform.static2.text=count[["value"]]
+
 showLibs = function(libs){
     winform.listview.clear();
     winform.listview.redraw();
@@ -57,7 +56,8 @@ showLibs = function(libs){
 }
 var libs = eval(inet.http().get("https://raw.fastgit.org/ztmdnike/aardio/main/libs/list"):"");
 showLibs(libs);
-
+var count = web.rest.jsonLiteClient().api("https://api.countapi.xyz/hit/aardio-libs/aar-dio").get()
+winform.static2.text=count[["value"]]
 winform.text = "aardio扩展库（收集版） - 已获取服务器最新列表";
 winform.btnSetup.oncommand = function(id,event){
 	winform.btnSetup.disabled = true;
