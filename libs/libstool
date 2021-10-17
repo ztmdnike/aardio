@@ -34,11 +34,11 @@ winform.listview.insertColumn("本地版本",70)
 winform.listview.insertColumn("作者",80)  
 winform.listview.insertColumn("说明",-1) 
 winform.listview.insertColumn("范例",40)
-var count = web.rest.jsonLiteClient().api("https://api.countapi.xyz/hit/aardio-libs/aar-dio").get()
-winform.static2.text=count[["value"]]
+
 winform.show() 
 winform.text = "aardio扩展库安装程序 正在获取服务器列表...."
-
+var count = web.rest.jsonLiteClient().api("https://api.countapi.xyz/hit/aardio-libs/aar-dio").get()
+winform.static2.text=count[["value"]]
 showLibs = function(libs){
     winform.listview.clear();
     winform.listview.redraw();
