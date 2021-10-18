@@ -25,13 +25,19 @@ if(!atom){
 }
 
 getCount=function(key,n,g){
-	var get=g?"hit":"get";
-	var name=n?"aardio-sampleCode":"aardio-libs"
-	import web.rest.jsonLiteClient;
-	var countApi = web.rest.jsonLiteClient().api("https://api.countapi.xyz/"+get+"/{namespace}/{key}")
-	var data = countApi[name][key].get();
-	return data[["value"]] ; 
+return win.invoke(
+		function(key,n,g){
+			import win;
+			var get=g?"hit":"get";
+			var name=n?"aardio-sampleCode":"aardio-libs"
+			import web.rest.jsonLiteClient;
+			var countApi = web.rest.jsonLiteClient().api("https://api.countapi.xyz/"+get+"/{namespace}/{key}")
+			var data = countApi[name][key].get();
+			return data[["value"]] ; 
+		} ,key,n,g
+	)
 }
+
 
 winform.enableDpiScaling();
 
