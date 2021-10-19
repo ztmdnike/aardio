@@ -9,9 +9,9 @@
     reportXEx={libName="reportXEx";description="报表控件扩展版";version="1.0";author="光庆"};
     ["dll.dm"]={libName="dll.dm";description="大漠插件";version="3.1233";author="无名";zipUrl=1};
     ["dll.lw"]={libName="dll.lw";description="乐玩插件";version="8.08";author="无名";zipUrl=1};
-	["aaz.chrome.dp"]={libName="aaz.chrome.dp";description="Chrome开发工具协议";version="211019";author="btx638";zipUrl=1};
-	["aaz.libchakraCore"]={libName="aaz.libchakraCore";description="Chakra JavaScript 引擎";version="211019";author="btx638";codeUrl=1};
-	["aaz.libhpsocket"]={libName="aaz.libhpsocket";description="HP-Socket-bindings";version="211019";author="btx638";zipUrl=1};
-	["aaz.libxl"]={libName="aaz.libxl";description="libxl-bindings";version="211019";author="btx638";zipUrl=1};
-
+    ["aaz.chrome.dp"]={libName="aaz.chrome.dp";description="Chrome开发工具协议";version="211019";author="btx638";zipUrl=1};
+    ["aaz.libchakraCore"]={libName="aaz.libchakraCore";description="Chakra JavaScript 引擎";version="211019";author="btx638";codeUrl=1};
+    ["aaz.libhpsocket"]={libName="aaz.libhpsocket";description="HP-Socket-bindings";version="211019";author="btx638";zipUrl=1};
+    ["aaz.libxl"]={libName="aaz.libxl";description="libxl-bindings";version="211019";author="btx638";zipUrl=1};
+    
 }
