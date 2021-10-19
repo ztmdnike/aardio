@@ -19,6 +19,9 @@ static2={cls="static";left=107;top=12;right=201;bottom=36;transparent=1;z=9}
 import inet.http;
 import win.ui.atom;
 import ide
+lnk={
+list="https://raw.fastgit.org/ztmdnike/aardio/main/libs/list";
+res="https://raw.fastgit.org/ztmdnike/aardio/main/libs/"}
 var atom,hwnd = winform.atom("aardio.extlib.F4700CFB-B4ED-4637-8F19-C76B3B8DC7F9");
 if(!atom){ 
 	win.quitMessage();	return;
@@ -59,7 +62,7 @@ showLibs = function(libs){
 	if( libs ){ 
 		var installedLibs = ide.getExtLibs(); 
 		for libName,libInfo in table.eachName(libs){ 
-			var row = winform.listview.addItem( { libName;libInfo.version;installedLibs[libName][["version"]] : "未安装";libInfo.author;libInfo.description;"未知";(libInfo.codeUrl:libInfo.zipUrl)?"有"})//getCount(libName);getCount(libName,1)} )
+			var row = winform.listview.addItem( { libName;libInfo.version;installedLibs[libName][["version"]] : "未安装";libInfo.author;libInfo.description;"未知";(libInfo.codeUrl:libInfo.zipUrl)?"有"})
 			if( installedLibs[libName][["version"]]  )
 				winform.listview.setChecked(row,true)
 		} 
@@ -69,7 +72,7 @@ showLibs = function(libs){
 		return ; 
 	} 	
 }
-var libs = eval(inet.http().get("https://raw.fastgit.org/ztmdnike/aardio/main/libs/list"):"");
+var libs = eval(inet.http().get(lnk.list):"");
 showLibs(libs);
 
 winform.text = "aardio扩展库（收集版） - 已获取服务器最新列表";
@@ -86,7 +89,7 @@ winform.btnSetup.oncommand = function(id,event){
 			if( installVersion != libVersion ){
 				winform.text = "aardio扩展库安装程序 正在安装扩展库:" + libName;
 				win.invoke(
-					function(libName,libs){
+					function(libName,lnk){
 						/*idex{{*/
 						namespace idex{
     						import inet.http;
@@ -104,58 +107,47 @@ winform.btnSetup.oncommand = function(id,event){
 							requestLibInfo = function(libName){
 								if( !libName ) error("请指定库名称参数",2);
 								return win.invoke(
-									function(libName){
+									function(libName,lnk){
 										import inet.http;
-										var listLib=eval(inet.http().get("https://raw.fastgit.org/ztmdnike/aardio/main/libs/list"):"")
+										var listLib=eval(inet.http().get(lnk.list):"")
 										if libName="all" return listLib; 
 										return listLib[libName];
-									},libName
+									},libName,lnk
 								) 
 							};
 							
-							installLib = function(libName,libUrl,askTitle){
-								return importFile(libName,libUrl,askTitle:"",true);
+							installLib = function(libName,askTitle){
+								return importFile(libName,askTitle:"",true);
 							};
 							
 							var hasBeenEntered = {}; 
-							importFile = function(libName,libUrl,askTitle,installOnly){ 
+							importFile = function(libName,askTitle,installOnly){ 
 								if(hasBeenEntered[libName]){
 									error('导入库失败,未找到库文件\n库路径:' + libName,3 );
 								}
 								hasBeenEntered[libName] = true; 
 								
 								var downloadUrl,downloadLibName,downloadVersion;
-								if(libUrl){
-									downloadLibName = libName;
-									downloadUrl = libUrl;
+								var updateInfo = requestLibInfo( libName ); 
+								if( ! (updateInfo) ){
+									if(!installOnly){
+										error('导入库失败,未找到库文件\n库路径:' + libName,3 );
+									}
+									hasBeenEntered[libName] = false;
+									return false;
 								}
-								elseif(_IMPORTURL[libName]){
-									downloadLibName = libName;
-									downloadUrl = _IMPORTURL[libName];
-								}
-								else{
-									var updateInfo = requestLibInfo( libName ); 
-									if( ! ( updateInfo ? updateInfo.url ) ){
-										if(!installOnly){
-											error('导入库失败,未找到库文件\n库路径:' + libName,3 );
-										}
+							
+								if( installOnly ){
+									var libVers = getExtLibs();
+									if( libVers[libName][["version"]] == updateInfo.version ){
 										hasBeenEntered[libName] = false;
-										return false;
-									}
-									
-									if( installOnly ){
-										var libVers = getExtLibs();
-										if( libVers[libName][["version"]] == updateInfo.version ){
-											hasBeenEntered[libName] = false;
-											return true;	
-										} 
-									}
-									
-									downloadUrl = updateInfo.url;
-									downloadLibName = updateInfo.libName;
-									downloadVersion =  updateInfo.version;
+										return true;	
+									} 
 								}
 								
+								downloadLibName = updateInfo.libName;
+								downloadUrl = lnk.res+"lzma/"+downloadLibName+".tar.lzma";
+								downloadVersion =  updateInfo.version;
 								if( !askTitle )
 									askTitle =  libName+" 扩展库尚未安装,您需要下载安装 "+libName+" 扩展库吗?";
 								
@@ -337,7 +329,7 @@ winform.btnSetup.oncommand = function(id,event){
 						/*}}*/
 						idex.installLib( libName )
 						
-					} ,libName,libs
+					} ,libName,lnk
 				)
 				
 				if(  ..win.isClosed() ) return;
@@ -395,13 +387,14 @@ winform.listview.onnotify = function(id,code,ptr){
         		if(!libName) return;
 				var libInfo = libs[libName]
 				if( libInfo.codeUrl ){
+					var url=lnk.res+"sampleCode/"+ libName
 					var code,err = win.invoke(
 						function(url){
 							import inet.http;
 							var http = inet.http();
 							http.disableCache();
 							return http.get(url);
-						},libInfo.codeUrl
+						},url
 					)
 					if(!code) return;
 					var codePath = "/.sampleCode/" + libName + ".aardio";
@@ -414,7 +407,7 @@ winform.listview.onnotify = function(id,code,ptr){
 					var codePath = "/.sampleCode/" + libName + ".zip";
 					var downBox = inet.downBox(winform,"/.sampleCode/" + libName,true )
 	
-					if( downBox.download(libInfo.zipUrl , codePath ) ){
+					if( downBox.download(lnk.res +"sampleCode/"+ libName + ".zip", codePath ) ){
 	 					var ok,err = zlib.unzip.extract( codePath, "/.sampleCode/" + libName ) 
 	 					..process.explore("/.sampleCode/" + libName)
 	 					winform.listview.setItemText(getCount(libName,1,1),nm.iItem,7)
