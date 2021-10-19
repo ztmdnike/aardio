@@ -8,6 +8,6 @@
     ["string.godking"]={libName="string.godking";description="扩展系统函数";version="1.0";author="光庆";codeUrl=1};
     reportXEx={libName="reportXEx";description="报表控件扩展版";version="1.0";author="光庆"};
     ["dll.dm"]={libName="dll.dm";description="大漠插件";version="3.1233";author="无名";zipUrl=1};
-    ["dll.lw"]={libName="dll.lw";description="乐玩插件插件";version="8.08";author="无名";zipUrl=1};
+    ["dll.lw"]={libName="dll.lw";description="乐玩插件";version="8.08";author="无名";zipUrl=1};
     
 }
