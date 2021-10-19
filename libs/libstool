@@ -8,8 +8,9 @@ btnSearch={cls="button";text="搜索扩展库";left=655;top=6;right=773;bottom=3
 btnSelectAll={cls="button";text="全选";left=453;top=469;right=532;bottom=498;db=1;dr=1;z=2};
 btnSetup={cls="button";text="安装/更新";left=649;top=469;right=763;bottom=498;db=1;dr=1;z=4};
 button2={cls="button";text="累计使用量";left=13;top=5;right=104;bottom=36;z=10};
+checkbox={cls="checkbox";text="github源地址下载";left=16;top=474;right=140;bottom=494;z=11};
 editKeyword={cls="edit";left=428;top=6;right=645;bottom=36;dr=1;dt=1;edge=1;z=6};
-lbInfo={cls="static";text="鼠标双击上面的扩展库项目打开相关范例";left=140;top=473;right=435;bottom=501;db=1;dl=1;dr=1;transparent=1;z=5};
+lbInfo={cls="static";text="鼠标双击上面的扩展库项目打开相关范例";left=161;top=473;right=435;bottom=501;db=1;dl=1;dr=1;transparent=1;z=5};
 lbKeyword={cls="static";text="库名称或库功能有关的关键词：";left=207;top=13;right=420;bottom=35;align="right";dr=1;dt=1;transparent=1;z=8};
 listview={cls="listview";left=11;top=41;right=778;bottom=463;bgcolor=16777215;db=1;dl=1;dr=1;dt=1;edge=1;fullRow=1;z=1};
 static2={cls="static";left=107;top=12;right=201;bottom=36;transparent=1;z=9}
@@ -19,9 +20,11 @@ static2={cls="static";left=107;top=12;right=201;bottom=36;transparent=1;z=9}
 import inet.http;
 import win.ui.atom;
 import ide
+var fast="https://raw.fastgit.org/ztmdnike/aardio/main/libs/"
+var hub="https://github.com/ztmdnike/aardio/raw/main/libs/"
 lnk={
 list="https://raw.fastgit.org/ztmdnike/aardio/main/libs/list";
-res="https://raw.fastgit.org/ztmdnike/aardio/main/libs/"}
+res=fast}
 var atom,hwnd = winform.atom("aardio.extlib.F4700CFB-B4ED-4637-8F19-C76B3B8DC7F9");
 if(!atom){ 
 	win.quitMessage();	return;
@@ -498,5 +501,15 @@ winform.button2.oncommand = function(id,event){
 	winform.button2.disabled=false;	
 }
 winform.static2.text=getCount("total",,1)
+
+winform.checkbox.oncommand = function(id,event){
+	if(winform.checkbox.checked){
+		lnk.res=hub
+	}else {
+		lnk.res=fast
+	}
+	
+}
+
 winform.editKeyword.setFocus();
 win.loopMessage();
